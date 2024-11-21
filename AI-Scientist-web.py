@@ -1,5 +1,8 @@
 import threading
 import queue
+
+import pandas as pd
+
 from config import CONFIG
 import random
 import gradio as gr
@@ -49,8 +52,14 @@ def agent_thread_func(goals):
     agent.run([goals])
     # 初始化交互管理器和Agent
 
-def start_task(goals,selected_tools):
-    print(selected_tools)
+def start_task(goals,selected_tools,train_file=None , can_space_file = None):
+
+    if train_file is not None:
+        goals += f"The address of the training set is{train_file.name}."
+    if can_space_file is not None:
+        goals += f"The address of the unknow space dataset is{can_space_file.name}."
+
+    print(goals)
     global interaction_manager, agent
     interaction_manager = CONFIG["interaction_manager"]
     ceo_tools = CEO_departments_huamn_choice(selected_tools)
@@ -107,7 +116,7 @@ def AI_Scientist_UI():
             can_space_file = gr.File(label="未知空间")
         submit_button.click(fn=user_input_fn, inputs=[input_box], outputs=[input_box])
         refresh_button.click(fn=reset_game,inputs=[chatbot,goals,tools_choices],outputs=[chatbot, input_box])
-        goals_submit.click(fn = start_task, inputs=[goals,tools_choices],outputs = None)
+        goals_submit.click(fn = start_task, inputs=[goals,tools_choices,train_file,can_space_file],outputs = None)
         demo.load(fn=monitor, inputs=[chatbot], outputs=[chatbot], every=1.0)
     return demo
 

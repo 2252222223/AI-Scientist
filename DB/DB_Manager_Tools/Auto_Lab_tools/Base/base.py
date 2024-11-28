@@ -138,3 +138,72 @@ def modify_experimental_parameters(device_configs: list, device_nodedatas: list,
     device_configs.append(devices_all_parameters)
     device_nodedatas.append(nodedata)
     return device_configs, device_nodedatas
+
+
+def get_drug_setting():
+    return auto_lab_request_post(suffix_url="/api/Experiment/drug_setting")
+
+task_parse_prompt="""
+You are the manager of a materials synthesis laboratory. Your task is to analyze detailed synthesis processes provided by users and convert them into executable steps based on the equipment available in the lab.
+
+Task Requirements:
+1. Maintain the order of the process as described by the user.
+2. For each step, identify the experimental parameters. If no specific parameters are provided, return None.
+3. Select only the equipment you need.
+4. Return the output as a valid JSON object that can be parsed by json.load().
+
+Laboratory Equipment Available:
+1. Powder Loading Systems: Used to weigh and load solid precursors into a container. Operating parameters are represented as a list of dictionaries with:
+    drug_name: Chemical formula of the precursor.
+    mass: Weight of the precursor (mg). 
+    Example:
+    [
+      {"drug_name": "Li2CO3", "mass": 280},
+      {"drug_name": "Li2F", "mass": 30}
+    ]
+2.Liquid Injection Systems: Used to add liquid precursors. Operating parameters are represented as a list of dictionaries with:
+
+    liquid_name: Chemical formula of the liquid.
+    volume: Volume of the liquid (ml). 
+    Example: [
+      {"liquid_name": "H2O", "volume": 20},
+      {"liquid_name": "C2H5OH", "volume": 30}
+    ]
+3. Ball Mill: Used to mix reaction precursors. Operating parameters are represented as a dictionaries with:
+    running_time: Duration (seconds).
+    running_speed: Speed (integer between 0 and 1500, default 1200). 
+    Example: {
+      "running_time": 600,
+      "running_speed": 1200
+    }
+4. Tube Furnace: Used for high-temperature sintering. Operating parameters are represented as a dictionaries with:
+    start_temperature: Starting temperature (°C).
+    target_temperature: Target temperature (°C).
+    time: Duration (minutes). Note: The first stage must start at 0°C and each subsequent stage must start at the previous stage's target temperature. 
+    Example:[
+      {"start_temperature": 0, "target_temperature": 100, "time": 10},
+      {"start_temperature": 100, "target_temperature": 200, "time": 15}
+    ]
+5. Oven: Used for liquid-phase reactions or drying, with temperatures below 200°C. Operating parameters are represented as a dictionaries with:
+    temperature: Operating temperature (°C, max 200).
+    time: Holding time (minutes). 
+    Example:
+    {
+      "temperature": 150,
+      "time": 300
+    }
+6. Tablet Press: Used to press powders into tablets. This device has no configurable parameters.
+7. Crusher: Used to pulverize samples into powder. This device has no configurable parameters.
+8. XRD: Used for physical characterization. Parameters are:
+    samplename: Name of the sample.
+    highvoltagekv: Optional voltage (10-40 kV, default 30).
+    highvoltagema: Optional current (5-40 mA, default 20). 
+    Example:
+    {
+      "samplename": "Li2MnO3",
+      "highvoltagekv": 20
+    }
+=
+User input:
+{synthesis processes}
+"""

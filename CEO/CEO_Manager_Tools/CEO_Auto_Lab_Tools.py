@@ -1,3 +1,10 @@
+import os
+#环境变量要设置到最前面，加载包的前面，不然无法传进去
+from CEO.Base.CEO_sk import sk,api_base,search_key
+os.environ['OPENAI_API_KEY'] = sk
+os.environ["OPENAI_API_BASE"] = api_base
+os.environ["SERPAPI_API_KEY"] = search_key
+import langchain
 from CEO.Base.CEO_Basetool import CEOBaseTool
 
 from typing import Optional, Type
@@ -9,20 +16,20 @@ from CEO.Base.CEO_sk import sk
 from DB.Base.Manager_agent import Departmental_Manager_agent, CEO_to_Manager_parse
 from DB.Base.Available_Vector_Library import available_vectors
 from pydantic import BaseModel, Field
-from DB.DB_Manager_Tools.OpenSource_Model_tools.OpenModel_TOOLS_integrated import Open_model_tools_list
+from DB.DB_Manager_Tools.Auto_Lab_tools.Auto_Lab_TOOLS_integrated import Auto_lab_tools_list
 from config import CONFIG
 
-
+Autolab_agent = Departmental_Manager_agent(CONFIG, Auto_lab_tools_list)
 
 
 
 class AutoLabSchema(BaseModel):
-    query: str = Field(description="Should be a dictionary. goal: The material synthesis task you want this subordinate to complete. The instructions must contain enough details about the material synthesis so that the subordinate can properly understand the synthesis steps.")
+    goal: str = Field(description="Automated laboratory tasks that you want your subordinates to complete. If the task is a material synthesis task, the instructions must contain enough details about the material synthesis so that the subordinate properly understands the synthesis steps. For other tasks, the workflow must contain sufficient detail.")
 
 
 class CustomAutoLabTool(CEOBaseTool):
     name = "Auto_lab_agent"
-    description = "This is one of your subordinates, useful when you wish to utilise an automated lab for material synthesis."
+    description = "This is one of your subordinates, useful when you wish to utilise an automated lab for material synthesis and other task."
     args_schema: Type[BaseModel] = AutoLabSchema
 
     def _run(
@@ -32,7 +39,7 @@ class CustomAutoLabTool(CEOBaseTool):
         query = CEO_to_Manager_parse(gaol)
         print("query:" + query)
 
-        return "Because of the security risks associated with the publication of the code for remote calls from the lab's automated lab, the material synthesis task could not be performed."
+        return Autolab_agent.run([goal])
 
     async def _arun(
             self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None

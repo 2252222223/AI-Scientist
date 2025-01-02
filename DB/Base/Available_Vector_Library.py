@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 def get_vector_list():
-    path = "D:\OneDrive - mails.ucas.ac.cn\Code\E707\AI-Scientist\DB\DB_Manager_Tools\ME_tools\Domain Vector Library"
+    path = "D:\OneDrive - mails.ucas.ac.cn\Code\E707\AI_Scientist\DB\DB_Manager_Tools\ME_tools\Domain Vector Library"
     subdirs = []  # 创建一个空列表
     p = Path(path)  # 创建一个Path对象，表示root目录
     for child in p.iterdir():  # 遍历root目录下的所有子目录和文件

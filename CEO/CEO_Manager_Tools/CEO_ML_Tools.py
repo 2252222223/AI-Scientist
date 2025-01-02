@@ -1,3 +1,9 @@
+#环境变量要设置到最前面，加载包的前面，不然无法传进去
+import os
+from CEO.Base.CEO_sk import sk,api_base,search_key
+os.environ['OPENAI_API_KEY'] = sk
+os.environ["OPENAI_API_BASE"] = api_base
+os.environ["SERPAPI_API_KEY"] = search_key
 from CEO.Base.CEO_Basetool import CEOBaseTool
 from pydantic import BaseModel, Field
 from typing import Optional, Type
@@ -9,20 +15,21 @@ from DB.Base.Manager_agent import Departmental_Manager_agent, CEO_to_Manager_par
 from DB.DB_Manager_Tools.MIR_tools.ML_TOOLS_integrated import ml_tools_list
 from config import CONFIG
 Expert_experience_path = "D:\pycharm\\MatterAI-0816-only-test\\DB\\DB_Manager_Tools\\ML_tools\\Expert_experience\\Expert_experience vector_store"
-ml_agent = Departmental_Manager_agent(CONFIG, ml_tools_list, Expert_experience_path=Expert_experience_path)
-
-
-# class MLSchema(BaseModel):
-#     query: str = Field(description="Query must contain two parts, objective: what you expect this subordinates to accomplish; file path: the dataset address, some tasks may contain multiple datasets, split by ','.")
+ml_agent = Departmental_Manager_agent(CONFIG, ml_tools_list, Expert_experience_path=Expert_experience_path,ai_name="MIR agent")
 
 
 class MLSchema(BaseModel):
-    query: str = Field(description="Should be a dictionary. goal:what you expect this subordinates to accomplish, goal should include more details, such as specifying interpretable algorithms, and be sure to inform the components if they exist.;train_set:The address of the training set required by the objective for machine learning algorithm training.test_set:Optional, Addresses of other files needed for machine learning algorithms, such as test sets, candidate sets, validation sets, etc. Components: optional, information about the components involved in the task.")
+    query: str = Field(description="""
+    It should have a dictionary-style structure. The goal keyspecifies the task to be accomplished and must include enough details such as the algorithm to be used, the dataset path with its description, and any other contextual details (e.g., combining knowledge with data reasoning).  For example:
+    {
+  "goal": "Here is a dataset of the composition and hardness of alloys, the dataset address is D:/alloy.xls, which is modeled using different machine learning algorithms (e.g., Random Forest, XGBOOST, Neural Networks)  to get the kind of algorithm with the highest accuracy."
+    } 
+    """)
 
 
 class CustomMLTool(CEOBaseTool):
-    name = "ML_tools_agent"
-    description = "This is one of your subordinates who is very good at utilizing machine learning algorithms for a variety of tasks. "
+    name = "MIR_tools_agent"
+    description = "This is one of your subordinates who is very good at utilizing machine learning algorithms for a variety of tasks. For example, material design, material reasoning, etc. "
     args_schema: Type[BaseModel] = MLSchema
 
     def _run(
@@ -41,9 +48,3 @@ class CustomMLTool(CEOBaseTool):
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("Calculator does not support async")
-# import langchain
-#
-# # print(CEO_agent.Expert_experience)
-# langchain.debug = True
-# ml_agent.run(["{'goal': 'Perform feature correlation analysis on the CO2 adsorption dataset', 'train_set': './CO2adsorption.xlsx'}"])
-

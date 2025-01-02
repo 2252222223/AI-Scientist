@@ -6,10 +6,6 @@ from CEO.Base.CEO_sk import sk,api_base
 from DB.DB_Manager_Tools.ME_tools.Chains.GPT4_answer_chain import GPT4_chain
 from DB.DB_Manager_Tools.ME_tools.Chains.Domain_answer_chain import domain_chain
 from DB.DB_Manager_Tools.ME_tools.Chains.Integrated_answer_chain import Integrated_chain
-
-# os.environ['OPENAI_API_KEY'] = sk
-# os.environ["OPENAI_API_BASE"] = api_base
-# 初始化 openai 的 embeddings 对象
 embeddings = OpenAIEmbeddings()
 
 from langchain.memory import ConversationBufferWindowMemory

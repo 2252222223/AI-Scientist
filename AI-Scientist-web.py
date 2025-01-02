@@ -15,8 +15,8 @@ from css import title_html
 from config import CONFIG
 # 新增一个全局变量，用于追踪是否已重置
 reset_flag = False
-
 interaction_manager = CONFIG["interaction_manager"]
+
 def monitor(chat_history):
     global reset_flag
 
@@ -53,12 +53,10 @@ def agent_thread_func(goals):
     # 初始化交互管理器和Agent
 
 def start_task(goals,selected_tools,train_file=None , can_space_file = None):
-
     if train_file is not None:
         goals += f"The address of the training set is{train_file.name}."
     if can_space_file is not None:
         goals += f"The address of the unknow space dataset is{can_space_file.name}."
-
     print(goals)
     global interaction_manager, agent
     interaction_manager = CONFIG["interaction_manager"]
@@ -102,18 +100,18 @@ def AI_Scientist_UI():
             )
         with gr.Row():
             goals = gr.Textbox(label="goal：", lines=1,scale=5)
-            goals_submit = gr.Button("🚀 提交", scale=1)
-            refresh_button = gr.Button("✨ 新任务", scale=1)
+            goals_submit = gr.Button("🚀 Submit", scale=1)
+            refresh_button = gr.Button("✨ New task", scale=1)
         with gr.Row():
             # 输出显示框，应用自定义CSS类
             chatbot = gr.Chatbot()
         with gr.Row():
-            input_box = gr.Textbox(label="用户输入：", lines=1,scale=5)
-            submit_button = gr.Button("🚀 提交", scale=1)
+            input_box = gr.Textbox(label="Human supervision：", lines=1,scale=5)
+            submit_button = gr.Button("🚀 Feedback", scale=1)
 
         with gr.Row():
-            train_file = gr.File(label="训练集")  # 返回的是文件，用文件名可获得地址
-            can_space_file = gr.File(label="未知空间")
+            train_file = gr.File(label="Training set")  # 返回的是文件，用文件名可获得地址
+            can_space_file = gr.File(label="Test set or unknown space")
         submit_button.click(fn=user_input_fn, inputs=[input_box], outputs=[input_box])
         refresh_button.click(fn=reset_game,inputs=[chatbot,goals,tools_choices],outputs=[chatbot, input_box])
         goals_submit.click(fn = start_task, inputs=[goals,tools_choices,train_file,can_space_file],outputs = None)

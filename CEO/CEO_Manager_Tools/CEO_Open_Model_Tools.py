@@ -7,14 +7,12 @@ from langchain.callbacks.manager import (
 )
 from CEO.Base.CEO_sk import sk
 from DB.Base.Manager_agent import Departmental_Manager_agent, CEO_to_Manager_parse
-from DB.Base.Available_Vector_Library import available_vectors
 from pydantic import BaseModel, Field
 from DB.DB_Manager_Tools.OpenSource_Model_tools.OpenModel_TOOLS_integrated import Open_model_tools_list
 from config import CONFIG
 
 
-Expert_experience_path = "D:\pycharm\\MatterAI-0816\\DB\\DB_Manager_Tools\\Knowledge_Q_A_tools\\Expert_experience" \
-                         "\\Expert_experience vector_store "
+Expert_experience_path = ""
 Open_model_agent = Departmental_Manager_agent(CONFIG, Open_model_tools_list,Expert_experience_path = Expert_experience_path)
 
 

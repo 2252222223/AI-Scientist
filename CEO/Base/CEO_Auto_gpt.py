@@ -185,7 +185,7 @@ class CEO_GPT:
 
                 feedback = f"\n{self.feedback_tool.run(report_to_COB)}"
 
-                if "YES" in feedback.upper():
+                if "YES" in feedback.upper() or "OK" in feedback.upper() or "Sure" in feedback.upper():
                     cob_command = ("")
                     action =execute_tool()
                     if action.name == FINISH_NAME:

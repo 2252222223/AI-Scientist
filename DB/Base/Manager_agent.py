@@ -8,7 +8,7 @@ from langchain.vectorstores import FAISS
 from langchain.docstore import InMemoryDocstore
 from langchain.embeddings import OpenAIEmbeddings
 from DB.Base.Manager_Auto_gpt import Manager_GPT
-
+from typing import Optional
 
 def memory_store():
     embeddings_model = OpenAIEmbeddings()
@@ -18,13 +18,13 @@ def memory_store():
     return vectorstore
 
 
-def Departmental_Manager_agent(CONFIG:dict, tools_list: list, Expert_experience_path:str) -> AutoGPT:
+def Departmental_Manager_agent(CONFIG:dict, tools_list: list, Expert_experience_path:Optional[str]=None, ai_name:Optional[str]="MatterAI") -> AutoGPT:
 
     vectorstore = memory_store()
     llm = ChatOpenAI(model_name = CONFIG["model_name"],temperature=0, max_tokens=1000)
     # llm = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=1.0)
     Manager_agent = Manager_GPT.from_llm_and_tools(
-        ai_name="MatterAI",
+        ai_name=ai_name,
         ai_role="non",
         tools=tools_list,
         llm=llm,

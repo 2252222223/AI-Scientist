@@ -11,7 +11,7 @@ from DB.DB_Manager_Tools.MIR_tools.Base.Data_Preprocess import data_preprocessin
 class L_R_PreSchema(BaseModel):
 
     f_path: str = Field(description="Should be a tabular address ending in csv or xlx.")
-    metrics: str = Field(description="Optional, Should be a model evaluation metric, either MAE or R2, default R2.")
+    metrics: str = Field(description="Optional, Should be a model evaluation metric, either MAE or R2, default MAE.")
 
 
 def Line_Reg(f_path: str, metrics: Optional[str] = "MAE", seed=42) -> str:
@@ -23,7 +23,7 @@ def Line_Reg(f_path: str, metrics: Optional[str] = "MAE", seed=42) -> str:
     Metr =[] #评估指标
     x = datasets[:, :-1]
     y = datasets[:, -1:]
-    cor = np.zero((1,x.shape[0]))
+    cor = np.zeros((1,x.shape[1]))
     intercept = 0
     for i, (trn_idx, val_idx) in enumerate(skf.split(x, y)):
         trn_x, trn_y = x[trn_idx], y[trn_idx]
@@ -40,16 +40,25 @@ def Line_Reg(f_path: str, metrics: Optional[str] = "MAE", seed=42) -> str:
         cor += model.coef_/n_splits
         intercept += model.intercept_/n_splits
 
+    print(cor)
+    print(len(cor[0]))
     Metr_mean = np.array(Metr).mean()
     #表达式
     y = ""
     for i in range(len(cor[0])):
         if cor[0][i] >0:
-            y += str(cor[0][i]) + "*" + data.columns[i] + "+"
+            y += "+" + str(round(cor[0][i],2))+ "*" + data.columns[i]
         else:
-            y += str(cor[0][i]) + "*" + data.columns[i]
-    y = y + str(intercept/n_splits) if y.endswith("+") else "+" + str(intercept)
-    response = f"""The linear regression expression for dataset {f_path} is {y}, and its {metrics} metric is {Metr_mean}."""
+            y += str(round(cor[0][i],2)) + "*" + data.columns[i]
+        print(y)
+
+    #加上截距
+    intercept= intercept[0]/n_splits
+    if intercept>0:
+        y += "+" + str(round(intercept, 10))
+    else:
+        y += str(round(intercept, 2))
+    response = f"""The linear regression expression for dataset {f_path} is y = {y}, and its {metrics} metric is {Metr_mean}."""
 
     return response
 
@@ -60,8 +69,8 @@ class Line_Regression(BaseTool):
     args_schema: Type[BaseModel] = L_R_PreSchema
 
     def _run(self, f_path: str, metrics: Optional[str]) -> str:
-
-        return Line_Reg(f_path)
+        print("saddddddddddddd")
+        return Line_Reg(f_path,metrics)
 
     async def _arun(self, query: str) -> str:
         raise NotImplementedError("暂时不支持异步")

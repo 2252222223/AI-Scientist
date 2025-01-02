@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 #环境变量要设置到最前面，加载包的前面，不然无法传进去
 from CEO.Base.CEO_sk import sk,api_base,search_key
@@ -12,14 +13,12 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from CEO.Base.CEO_sk import sk
 from DB.Base.Manager_agent import Departmental_Manager_agent, CEO_to_Manager_parse
-from DB.Base.Available_Vector_Library import available_vectors
 from pydantic import BaseModel, Field
 from DB.DB_Manager_Tools.Auto_Lab_tools.Auto_Lab_TOOLS_integrated import Auto_lab_tools_list
 from config import CONFIG
 
-Autolab_agent = Departmental_Manager_agent(CONFIG, Auto_lab_tools_list)
+Autolab_agent = Departmental_Manager_agent(CONFIG, Auto_lab_tools_list,ai_name="PEI agent")
 
 
 
@@ -37,12 +36,11 @@ class CustomAutoLabTool(CEOBaseTool):
     ) -> str:
         """Use the tool."""
         query = CEO_to_Manager_parse(gaol)
-        print("query:" + query)
 
-        return Autolab_agent.run([goal])
-
+        return Autolab_agent.run([query])
     async def _arun(
             self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("Calculator does not support async")
+

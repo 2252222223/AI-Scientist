@@ -11,7 +11,7 @@ from DB.Base.Available_Vector_Library import available_vectors
 from pydantic import BaseModel, Field
 from config import CONFIG
 Expert_experience_path = "D:\pycharm\\MatterAI-0816\\DB\\DB_Manager_Tools\\Knowledge_Acquisition_tools\\Expert_experience\\Expert_experience vector_store"
-ka_agent = Departmental_Manager_agent(CONFIG, ka_tools_list,Expert_experience_path = Expert_experience_path)
+ka_agent = Departmental_Manager_agent(CONFIG, ka_tools_list,Expert_experience_path = Expert_experience_path,ai_name="SLA agent")
 
 
 class CustomKAToolSchema(BaseModel):
@@ -19,7 +19,7 @@ class CustomKAToolSchema(BaseModel):
 
 
 class CustomKATool(CEOBaseTool):
-    name = "Knowledge_Acquisition_agent"
+    name = "SL_agent"
     description = "Useful when users explicitly ask you to take knowledge from literature. "
 
     args_schema: Type[BaseModel] = CustomKAToolSchema

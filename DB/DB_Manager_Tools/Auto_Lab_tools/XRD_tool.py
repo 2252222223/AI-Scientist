@@ -41,6 +41,3 @@ class XRD_tool(BaseTool):
 
     async def _arun(self, query: str) -> str:
         raise NotImplementedError("暂时不支持异步")
-
-
-# XRD_task_submit({'samplename': 'lithium iron phosphate', 'testsampletype': 2, 'highvoltagekv': 20})

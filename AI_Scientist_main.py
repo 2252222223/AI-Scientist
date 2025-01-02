@@ -11,6 +11,7 @@ from CEO.Base.CEO_Auto_gpt import CEO_GPT
 import faiss
 from langchain.vectorstores import FAISS
 from CEO.CEO_Manager_Tools.CEO_Manger_Tool_integrated import CEO_tools_list
+from config import CONFIG
 
 
 
@@ -45,11 +46,4 @@ def AI_Scientist(CONFIG):
     )
     return CEO_agent
 
-import langchain
 
-# print(CEO_agent.Expert_experience)
-langchain.debug = True
-#
-# query = """"""
-#
-# CEO_agent.run([query])

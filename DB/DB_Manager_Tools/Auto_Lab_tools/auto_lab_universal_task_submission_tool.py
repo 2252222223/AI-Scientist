@@ -1,3 +1,8 @@
+import os
+from CEO.Base.CEO_sk import sk,api_base,search_key
+os.environ['OPENAI_API_KEY'] = sk
+os.environ["OPENAI_API_BASE"] = api_base
+os.environ["SERPAPI_API_KEY"] = search_key
 from langchain.tools import BaseTool
 from DB.DB_Manager_Tools.Auto_Lab_tools.Base.Submit_task import submit_experiment_task, create_auto_lab_task_data
 from DB.DB_Manager_Tools.Auto_Lab_tools.Base.Devices import (get_XRD_all_parameters,get_WLDWT_all_parameters,
@@ -6,7 +11,7 @@ from DB.DB_Manager_Tools.Auto_Lab_tools.Base.Devices import (get_XRD_all_paramet
                                                              get_RQZH_all_parameters, get_TCYPJ_all_parameters,
                                                              get_GTLHCGW_all_parameters,get_GSL_all_parameters,
                                                              get_ESPSJ_all_parameters)
-from DB.DB_Manager_Tools.Auto_Lab_tools.Base.base import get_current_time,modify_experimental_parameters,task_parse_prompt,get_drug_setting
+from DB.DB_Manager_Tools.Auto_Lab_tools.Base.base import get_current_time, modify_experimental_parameters, task_parse_prompt, get_drug_setting
 from pydantic import BaseModel, Field, conint
 from langchain.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain
@@ -62,7 +67,7 @@ def modify_TCYPJ(device_configs,device_nodedatas,Parameters):
     return device_configs, device_nodedatas
 
 
-def modify_GTL(device_configs,device_nodedatas,Parameters):
+def modify_GSL(device_configs,device_nodedatas,Parameters):
     Temperature_set = Parameters
     Temperature_modify_parameters = []
     for i in Temperature_set:
@@ -107,11 +112,11 @@ def universal_task_submit(process_parameter):
             if step["Equipment"] == "Powder Loading Systems":
                 device_configs, device_nodedatas = modify_GTLPF(device_configs, device_nodedatas, step["Parameters"])
             elif step["Equipment"] =="Ball Mill":
-                device_configs, device_nodedatas = modify_GTLPF(device_configs, device_nodedatas, step["Parameters"])
+                device_configs, device_nodedatas = modify_QMGQMJ(device_configs, device_nodedatas, step["Parameters"])
             elif step["Equipment"] =="Tablet Press":
                 device_configs, device_nodedatas = modify_TCYPJ(device_configs,device_nodedatas,step["Parameters"])
             elif step["Equipment"] == "Tube Furnace":
-                device_configs, device_nodedatas = modify_TCYPJ(device_configs,device_nodedatas,step["Parameters"])
+                device_configs, device_nodedatas = modify_GSL(device_configs,device_nodedatas,step["Parameters"])
             elif step["Equipment"] == "Crusher":
                 device_configs, device_nodedatas = modify_ESPSJ(device_configs,device_nodedatas,step["Parameters"])
             elif step["Equipment"] == "XRD":
@@ -128,7 +133,6 @@ def workflow_extraction():
     llm = ChatOpenAI(model_name="gpt-4o", temperature=0, max_tokens=1000)
     llm_extraction_model = LLMChain(llm=llm, prompt=five_prompt)
     return llm_extraction_model
-
 class Universal_task_Schema(BaseModel):
 
     task_workflow: str = Field(..., description="""It should be an exhaustive task flow, such as a material synthesis task.
@@ -147,8 +151,8 @@ class Universal_task_tool(BaseTool):
         task_workflow = json.loads(bb)
         print(task_workflow)
         response = universal_task_submit(task_workflow)
-
         return response
 
     async def _arun(self, query: str) -> str:
         raise NotImplementedError("暂时不支持异步")
+

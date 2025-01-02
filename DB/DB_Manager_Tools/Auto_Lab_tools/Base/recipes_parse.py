@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 def get_lab_reagents_dict():
-    Reagents = pd.read_excel("D:\OneDrive - mails.ucas.ac.cn\Code\E707\AI-Scientist\DB\DB_Manager_Tools\Auto_Lab_tools\Base\Laboratory Reagents List.xlsx")
+    Reagents = pd.read_excel("D:\OneDrive - mails.ucas.ac.cn\Code\E707\AI_Scientist\DB\DB_Manager_Tools\Auto_Lab_tools\Base\Laboratory Reagents List.xlsx")
     Reagents_list = {}
     for index,row in Reagents.iterrows():
         Reagents_list[row["Reagents"]] = {"Purity":row["Purity"],"Molar mass":row["Molar mass"],"Metal source":row["Metal source"]}
@@ -63,11 +63,3 @@ def get_recipes(abc):
     des = recipes_to_descriptions(recipes)
     des = f"{mass}g {materials} detailed recipe for the preparation is "  + des + "."
     return des
-
-# abc ={
-# "Chemical formula":"'Li1.200Mn(II)0.004Mn(III)0.714Ti0.150O1.950F0.050",
-# "Precursor":{"Li":"Li2CO3","Mn(II)":"MnO","Mn(III)":"Mn2O3","Mn(IV)":"MnO2","Ti":"TiO2","Nb":"Nb2O5","F":"LiF"},
-# "Mass":1
-# }
-#
-# print(get_recipes(abc))

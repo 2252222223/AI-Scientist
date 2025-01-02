@@ -1,3 +1,5 @@
+import sys
+sys.stdout.reconfigure(encoding='utf-8')  # 配置标准输出流为 UTF-8
 from typing import List, Optional
 from pydantic import ValidationError
 from langchain.chains.llm import LLMChain
@@ -164,20 +166,20 @@ class Manager_GPT:
 
             if self.feedback_tool is not None:
                 DB_decision = assistant_reply
-                report_to_COB = f"Honorable COB, the following is the Departmental Manager decision report:" \
+                report_to_COB = f"Honorable COB, the following is the {self.ai_name} decision report:" \
                                 f"{DB_decision}" \
                                 f"" \
                                 f"Now,please make your instructions:"
                 feedback = f"\n{self.feedback_tool.run(report_to_COB)}"
 
 
-                if "YES" in feedback.upper():
+                if "YES" in feedback.upper() or "SURE" in feedback.upper() or "OK" in feedback.upper():
 
                     action =execute_tool()
                     if action.name == FINISH_NAME:
                         return action.args["response"]
                 else:
-                    cob_instructions = f"The following are the CEO's instructions, which you must obey unconditionally. Instructions:{feedback}"
+                    cob_instructions = f"The following are the COB's instructions, which you must obey unconditionally. Instructions:{feedback}"
                     cob_command = (cob_instructions)
             else:
                 action =execute_tool()

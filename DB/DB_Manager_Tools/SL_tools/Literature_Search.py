@@ -93,29 +93,3 @@ class PdfMatch(BaseTool):
         raise NotImplementedError("暂时不支持异步")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# obtain_pdf_name()
-# pdf_name_embedding(txt_folder="./pdf_name/")
-
-# key_world = "2020_ji_disordered_spinel_nature_energy"
-# embeddings = OpenAIEmbeddings(openai_api_key=sk)
-# docsearch = Chroma(persist_directory="./pdf_name/vector_store", embedding_function=embeddings)
-# docs = docsearch.similarity_search(key_world, include_metadata=True)
-# aaa = docsearch.similarity_search_with_score(key_world)
-# # 打印每个文档的相似度分数
-# for doc, score in aaa:
-#     print(f"文档: {doc}, 相似度分数: {score}")
-

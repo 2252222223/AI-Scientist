@@ -10,7 +10,6 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-from CEO.Base.CEO_sk import sk
 from DB.DB_Manager_Tools.ME_tools.Knowledge_Q_A_TOOLS_integrated import K_Q_A_tools_list
 from DB.Base.Manager_agent import Departmental_Manager_agent, CEO_to_Manager_parse
 from DB.Base.Available_Vector_Library import available_vectors
@@ -19,7 +18,7 @@ from config import CONFIG
 
 Expert_experience_path = "D:\pycharm\\MatterAI-0816\\DB\\DB_Manager_Tools\\Knowledge_Q_A_tools\\Expert_experience" \
                          "\\Expert_experience vector_store "
-K_Q_A_agent = Departmental_Manager_agent(CONFIG, K_Q_A_tools_list,Expert_experience_path = Expert_experience_path)
+K_Q_A_agent = Departmental_Manager_agent(CONFIG, K_Q_A_tools_list,Expert_experience_path = Expert_experience_path,ai_name="ME agent")
 
 
 class QASchema(BaseModel):
@@ -27,9 +26,9 @@ class QASchema(BaseModel):
 
 
 class CustomKQATool(CEOBaseTool):
-    name = "k_Q_A_agent"
+    name = "ME_agent"
     description = "This is one of your subordinates who is very good at answering questions in the field of materials " \
-                  "science. The tool has the highest priority in answering questions."
+                  "science. For example, material synthesis methods, material properties etc.. The tool has the highest priority in answering questions."
 
     args_schema: Type[BaseModel] = QASchema
 
@@ -42,11 +41,10 @@ class CustomKQATool(CEOBaseTool):
 
         return K_Q_A_agent.run([query])
 
+
     async def _arun(
             self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("Calculator does not support async")
 
-
-# K_Q_A_agent.run(["What are the aspects of fluoride ion doping that affect the performance of lithium-rich cathode materials?"])

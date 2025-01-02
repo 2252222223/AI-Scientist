@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 import gpytorch
 import numpy as np
@@ -107,7 +108,8 @@ def search_next_point(Y_init, pred_mean, pred_std, x_test):
 
 def GP_only_train(path):
     train_dateset_path = data_preprocessing(path)
-    data = data_preprocessing(train_dateset_path)
+    data_path = data_preprocessing(train_dateset_path)
+    data = np.array(pd.read_csv(data_path))
     x = data[:, :-1]
     y = data[:, -1:]
     criterion = torch.nn.L1Loss()
@@ -123,7 +125,7 @@ def GP_only_train(path):
         y_valid_t = torch.from_numpy(val_y.squeeze().astype(np.float32))
         model, likelihood = gp_model_train(X_train_t, y_train_t)
         observed_pred, pred_mean, pred_std = model_eval(model, likelihood, X_valid_t)
-        mae = criterion(observed_pred, y_valid_t)
+        mae = criterion(pred_mean, y_valid_t)
         loss.append(mae)
     mae_mean = np.array(loss).mean()
     return f"On dataset {path}, and the best MAE metric is {mae_mean} for Gaussian process Regression."

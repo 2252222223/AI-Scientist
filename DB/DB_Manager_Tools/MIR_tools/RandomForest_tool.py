@@ -100,7 +100,7 @@ def RF_tool(task: str, file_path: str):
                                                        data=data1)
         pre_reslust = get_prediction(rf_best_params, data1, data2)
         response = f"The prediction of random forest is {pre_reslust}."
-        return  response
+        return response
 
 
 class R_F_PreSchema(BaseModel):

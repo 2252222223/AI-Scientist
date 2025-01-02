@@ -14,7 +14,7 @@ from langchain.tools import BaseTool
 
 
 Expert_experience_path = "D:\pycharm\\MatterAI-0816\\DB\\DB_Manager_Tools\\Data_Collect_tools\\Expert_experience\\Expert_experience vector_store"
-DC_agent = Departmental_Manager_agent(CONFIG, Data_Collect_tools_list,Expert_experience_path = Expert_experience_path)
+DC_agent = Departmental_Manager_agent(CONFIG, Data_Collect_tools_list,Expert_experience_path = Expert_experience_path,ai_name="DC agent")
 
 
 class DatacollectPreSchema(BaseModel):
@@ -23,7 +23,7 @@ class DatacollectPreSchema(BaseModel):
 
 
 class CustomDataCollectTool(CEOBaseTool):
-    name = "Data_Collect_tools_agent"
+    name = "DA_tools_agent"
     description = "Very useful when you need to collect datasets from the literature."
     args_schema: Type[BaseModel] = DatacollectPreSchema
 
